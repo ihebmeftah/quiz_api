@@ -1,46 +1,52 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Student } from './entities/student.entites';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UpdateStudentDto } from './dtos/updatestudent.dto';
+import { CreateStudentDto } from './dtos/createstudent.dto';
 
 @Injectable()
 export class StudentService {
-  students: Student[] = [
-    {
-      id: 1,
-      name: 'iheb meftah',
-      age: 23,
-      adress: ['Tunis', 'Gabes'],
-    },
-  ];
+  constructor(
+    @InjectRepository(Student)
+    private readonly studentRepo: Repository<Student>,
+  ) {}
 
-  findAll() {
-    return this.students;
+  async findAll(): Promise<Student[]> {
+    return await this.studentRepo.find();
   }
 
-  findOne(id: number) {
-    const student = this.students.find((std) => std.id === +id);
-    if (!student) {
+  async findOne(id: number): Promise<Student> {
+    const student = await this.studentRepo.findOne({
+      where: { id },
+    });
+    if (!student)
       throw new HttpException('Student not exist', HttpStatus.NOT_FOUND);
-    }
+
     return student;
   }
-  create(createdStudent: any) {
-    this.students.push(createdStudent);
-    return this.students;
+  async create(createdStudent: CreateStudentDto) {
+    const student = await this.studentRepo.create({ ...createdStudent });
+    return this.studentRepo.save(student);
   }
-  update(id: number, updateStudent: any) {
-    const studentIndex = this.findOne(id);
-    if (!studentIndex) {
-      throw new HttpException('Student not exist', HttpStatus.NOT_FOUND);
-    }
-    updateStudent;
-    return 'updated';
+  async update(id: number, updateStudent: UpdateStudentDto) {
+    const student = await this.studentRepo.preload({
+      id: +id,
+      ...updateStudent,
+    });
+    if (!student) throw new HttpException('not exist ', HttpStatus.NOT_FOUND);
+
+    return this.studentRepo.save(student);
   }
-  delete(id: number) {
-    const studentIndex = this.students.findIndex((std) => std.id === +id);
-    if (studentIndex === -1) {
+  async delete(id: number) {
+    const student = await this.studentRepo.findOne({
+      where: { id },
+    });
+    if (!student)
       throw new HttpException('Student not exist', HttpStatus.NOT_FOUND);
-    }
-    this.students.splice(studentIndex);
+
+    this.studentRepo.delete(id);
+
     return 'Student with this id : ' + id + ' deleted';
   }
 }
