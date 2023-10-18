@@ -1,12 +1,13 @@
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { StudentModule } from './student/student.module';
+import { QuizModule } from './quiz/quiz.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 
 @Module({
   imports: [
-    StudentModule,
+    QuizModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -14,6 +15,8 @@ import { StudentModule } from './student/student.module';
       username: 'postgres',
       password: '1234',
       database: 'postgres',
+      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+      migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
     }),
