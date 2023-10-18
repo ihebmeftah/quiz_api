@@ -1,5 +1,6 @@
 import { TimeStampEntity } from 'src/generics/db/timestamp.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Question } from './question.entity';
 
 @Entity('quizes')
 export class Quiz extends TimeStampEntity {
@@ -16,4 +17,6 @@ export class Quiz extends TimeStampEntity {
     default: 1,
   })
   isActive: boolean;
+  @OneToMany(() => Question, (q) => q.quiz)
+  questions: Question[];
 }
