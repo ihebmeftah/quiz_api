@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../entities/question.entity';
 import { Repository } from 'typeorm';
@@ -22,5 +22,15 @@ export class QuestionService {
     quiz.questions = [newQuestion, ...quiz.questions];
     quiz.save();
     return newQuestion;
+  }
+  async deleteQuestion(id: number) {
+    const deletedQuestion = await this.questionRepo.findOne({ where: { id } });
+    if (!deletedQuestion)
+      throw new HttpException(
+        `Question with this id : ${id} not exist `,
+        HttpStatus.NOT_FOUND,
+      );
+    await this.questionRepo.delete(id);
+    return `Question with this id : ${id} deleted successfully `;
   }
 }
