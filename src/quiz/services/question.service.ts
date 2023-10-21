@@ -11,6 +11,11 @@ export class QuestionService {
     @InjectRepository(Question)
     private readonly questionRepo: Repository<Question>,
   ) {}
+  async getAllQuestions(): Promise<Question[]> {
+    return this.questionRepo.find({
+      relations: ['quiz'],
+    });
+  }
 
   async createQuestion(
     question: CreateQuestion,

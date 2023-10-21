@@ -17,6 +17,9 @@ export class Quiz extends TimeStampEntity {
     default: 1,
   })
   isActive: boolean;
-  @OneToMany(() => Question, (q) => q.quiz)
+  @OneToMany(() => Question, (q) => q.quiz, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   questions: Question[];
 }

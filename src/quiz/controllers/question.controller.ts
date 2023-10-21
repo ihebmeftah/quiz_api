@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import { Get, Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { CreateQuestion } from '../dtos/createquestion.dto';
 import { QuestionService } from '../services/question.service';
 import { QuizService } from '../services/quiz.service';
@@ -9,6 +9,10 @@ export class QuestionController {
     private readonly questionservice: QuestionService,
     private readonly quizServices: QuizService,
   ) {}
+  @Get()
+  async getAllQuestions() {
+    return this.questionservice.getAllQuestions();
+  }
   @Post()
   async createQuestion(@Body() question: CreateQuestion) {
     const quiz = await this.quizServices.getOneQuiz(question.quizId);

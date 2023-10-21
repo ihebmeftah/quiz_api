@@ -10,6 +10,6 @@ export class Question extends TimeStampEntity {
   @Column()
   question: string;
 
-  @ManyToOne(() => Quiz, (q) => q.questions)
+  @ManyToOne(() => Quiz, (q) => q.questions, { onDelete: 'CASCADE' })
   quiz: Quiz;
 }
