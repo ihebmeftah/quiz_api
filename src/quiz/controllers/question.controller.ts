@@ -13,6 +13,10 @@ export class QuestionController {
   async getAllQuestions() {
     return this.questionservice.getAllQuestions();
   }
+  @Get(':id')
+  async getQuestionById(@Param('id') id: number) {
+    return this.questionservice.getQuestionById(id);
+  }
   @Post()
   async createQuestion(@Body() question: CreateQuestion) {
     const quiz = await this.quizServices.getOneQuiz(question.quizId);

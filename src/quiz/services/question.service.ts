@@ -16,7 +16,18 @@ export class QuestionService {
       relations: ['quiz'],
     });
   }
-
+  async getQuestionById(id: number): Promise<Question> {
+    const questionById = await this.questionRepo.findOne({
+      where: { id },
+      relations: ['quiz'],
+    });
+    if (!questionById)
+      throw new HttpException(
+        `Question with this id : ${id} not exist `,
+        HttpStatus.NOT_FOUND,
+      );
+    return questionById;
+  }
   async createQuestion(
     question: CreateQuestion,
     quiz: Quiz,
