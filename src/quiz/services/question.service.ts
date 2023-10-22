@@ -11,11 +11,13 @@ export class QuestionService {
     @InjectRepository(Question)
     private readonly questionRepo: Repository<Question>,
   ) {}
+
   async getAllQuestions(): Promise<Question[]> {
     return this.questionRepo.find({
       relations: ['quiz'],
     });
   }
+
   async getQuestionById(id: number): Promise<Question> {
     const questionById = await this.questionRepo.findOne({
       where: { id },
@@ -28,6 +30,7 @@ export class QuestionService {
       );
     return questionById;
   }
+
   async createQuestion(
     question: CreateQuestion,
     quiz: Quiz,
@@ -39,6 +42,7 @@ export class QuestionService {
     quiz.save();
     return newQuestion;
   }
+
   async deleteQuestion(id: number) {
     const deletedQuestion = await this.questionRepo.findOne({ where: { id } });
     if (!deletedQuestion)
