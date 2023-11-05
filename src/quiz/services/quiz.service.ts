@@ -24,7 +24,7 @@ export class QuizService {
   async getOneQuiz(id: number): Promise<Quiz> {
     const quiz = await this.quizRepo.findOne({
       where: { id },
-      relations: ['questions'],
+      relations: ['questions', 'options'],
     });
     if (!quiz) throw new HttpException('Quiz not exist', HttpStatus.NOT_FOUND);
     return quiz;
